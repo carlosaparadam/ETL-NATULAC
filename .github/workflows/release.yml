@@ -6,29 +6,75 @@ on:
       - published
 
 jobs:
-  build-pdi-docker-image:
+  # Check secrets to push image in docker hub registry
+  check-docker-secrets:
+    name: Check if docker hub registry information was set on secrets
+    # needs:
+    #   - build-app
     runs-on: ubuntu-latest
+    outputs:
+      is_have_secrets: ${{ steps.check_secret_job.outputs.is_have_secrets }}
+    steps:
+      - id: check_secret_job
+        run: |
+          if [[ "${{ secrets.DOCKER_REPO_FRONTEND }}" != "" && \
+                "${{ secrets.DOCKER_USERNAME }}" != "" && \
+                "${{ secrets.DOCKER_TOKEN }}" != "" ]]; \
+          then
+            echo "Secrets to use a container registry are configured in the repo"
+            echo "is_have_secrets=true" >> $GITHUB_OUTPUT
+          else
+            echo "Secrets to use a container registry were not configured in the repo"
+            echo "is_have_secrets=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-pdi-docker-image:
+    name: Build docker image
+    runs-on: ubuntu-latest
+    needs:
+      - check-docker-secrets
+    # Skip step based on secret
+    if: needs.check-docker-secrets.outputs.is_have_secrets == 'true'
     steps:
       # Checkout Repo
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       # Get Pentaho PDI Binary
       - name: Get Binary Pentaho PDI
         uses: wei/curl@v1
         with:
           args: -L https://erpya.ams3.digitaloceanspaces.com/public/pdi-ce-9.3.0.0-428-PATCH.zip > pdi-ce-9.3.0.0-428.zip
-      # Build Docker Image
-      - name: Build Docker Image
-        run: docker build -t registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }} --file docker/Dockerfile .
-      # install the doctl on the runner
-      - name: Install doctl                 
-        uses: digitalocean/action-doctl@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      #Push Image to Docker Registry
-      - name: push image to digitalocean
-        run: |
-          doctl registry login
-          docker push registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }}
-          docker tag registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }} registry.digitalocean.com/erpya/etl-iancarina:latest
-          docker push registry.digitalocean.com/erpya/etl-iancarina:latest
+          # CONFIGURE DOCKER SECRETS INTO REPOSITORY
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push Docker Image Alpine
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_REPO_FRONTEND }}:latest
+            ${{ secrets.DOCKER_REPO_FRONTEND }}:${{ github.event.release.tag_name }}
+
+      # # Build Docker Image
+      # - name: Build Docker Image
+      #   run: docker build -t registry.digitalocean.com/erpya/etl-natulac:${{ github.event.release.tag_name }} --file docker/Dockerfile .
+      # # install the doctl on the runner
+      # - name: Install doctl
+      #   uses: digitalocean/action-doctl@v2
+      #   with:
+      #     token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      # #Push Image to Docker Registry
+      # - name: push image to digitalocean
+      #   run: |
+      #     doctl registry login
+      #     docker push registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }}
+      #     docker tag registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }} registry.digitalocean.com/erpya/etl-iancarina:latest
+      #     docker push registry.digitalocean.com/erpya/etl-iancarina:latest
