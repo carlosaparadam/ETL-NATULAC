@@ -17,7 +17,7 @@ jobs:
     steps:
       - id: check_secret_job
         run: |
-          if [[ "${{ secrets.DOCKER_REPO_FRONTEND }}" != "" && \
+          if [[ "${{ secrets.DOCKER_REPO_NAME }}" != "" && \
                 "${{ secrets.DOCKER_USERNAME }}" != "" && \
                 "${{ secrets.DOCKER_TOKEN }}" != "" ]]; \
           then
@@ -59,8 +59,8 @@ jobs:
           file: ./docker/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_REPO_FRONTEND }}:latest
-            ${{ secrets.DOCKER_REPO_FRONTEND }}:${{ github.event.release.tag_name }}
+            ${{ secrets.DOCKER_REPO_NAME }}:latest
+            ${{ secrets.DOCKER_REPO_NAME }}:${{ github.event.release.tag_name }}
 
       # # Build Docker Image
       # - name: Build Docker Image
