@@ -18,8 +18,7 @@ ENV EMAIL_PASSWORD=smtp_password
 ENV EMAIL_SENDER_NAME=ETL
 ENV EMAIL_DESTINATION_ADDRESS=destination@e-mail.com
 # Backend ENV
-ENV HOST="localhost"
-ENV PORT="5561"
+ENV HOST_URL="http://localhost:5561"
 ENV TOKEN="token-fill"
 ENV SOURCE_DIRECTORY="/opt/pentaho/"
 ENV SET_SOURCE_DIRECTORY="/opt/pentaho/"

@@ -14,5 +14,12 @@ sed -i "s|@EMAIL_PASSWORD@|$EMAIL_PASSWORD|g" /opt/pentaho/repo/Main_JOB.kjb
 sed -i "s|@EMAIL_SENDER_NAME@|$EMAIL_SENDER_NAME|g" /opt/pentaho/repo/Main_JOB.kjb
 sed -i "s|@EMAIL_DESTINATION_ADDRESS@|$EMAIL_DESTINATION_ADDRESS|g" /opt/pentaho/repo/Main_JOB.kjb
 
+
+sed -i "s|@HOST_URL@|$HOST_URL|g" /opt/pentaho/repo/Job/*.kjb
+sed -i "s|@TOKEN@|$TOKEN|g" /opt/pentaho/repo/Job/*.kjb
+sed -i "s|@SOURCE_DIRECTORY@|$SOURCE_DIRECTORY|g" /opt/pentaho/repo/Job/*.kjb
+sed -i "s|@SET_SOURCE_DIRECTORY@|$SET_SOURCE_DIRECTORY|g" /opt/pentaho/repo/Job/*.kjb
+
+
 #sh /opt/pentaho/setup_crontab.sh
 sh /opt/pentaho/run-server.sh

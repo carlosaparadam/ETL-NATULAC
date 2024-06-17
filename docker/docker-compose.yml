@@ -3,7 +3,7 @@ version: "3.9"
 services:
   etl:
     container_name: ${CONTAINER_NAME}
-    image: registry.digitalocean.com/erpya/etl-iancarina:latest
+    image: edwinbetanc0urt/etl-natulac:0.0.5
     restart: ${CONTAINER_RESTART}
     deploy:
       resources:
@@ -27,3 +27,8 @@ services:
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       EMAIL_SENDER_NAME: ${EMAIL_SENDER_NAME}
       EMAIL_DESTINATION_ADDRESS: ${EMAIL_DESTINATION_ADDRESS}
+      HOST: ${BACKEND_HOST}
+      PORT: ${BACKEND_PORT}
+      TOKEN: ${BACKEND_JWT_TOKEN}
+      SOURCE_DIRECTORY: ${OUTPUT_PATH}
+      SET_SOURCE_DIRECTORY: ${INPUT_PATH}
