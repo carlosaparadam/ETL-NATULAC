@@ -1,6 +1,6 @@
 FROM openjdk:8-jdk-alpine
 
-LABEL maintainer="EdwinBetanc0urt@outlook.com; ElsioSanches@gmail.com" \
+LABEL maintainer="EdwinBetanc0urt@outlook.com; ElsioSanches@gmail.com;" \
 	description="Mobile Stock gRPC Service"
 
 WORKDIR /opt/pentaho
@@ -17,6 +17,12 @@ ENV EMAIL_SENDER_ADDRESS=sender@e-mail.com
 ENV EMAIL_PASSWORD=smtp_password
 ENV EMAIL_SENDER_NAME=ETL
 ENV EMAIL_DESTINATION_ADDRESS=destination@e-mail.com
+# Backend ENV
+ENV HOST="localhost"
+ENV PORT="5561"
+ENV TOKEN="token-fill"
+ENV SOURCE_DIRECTORY="/opt/pentaho/"
+ENV SET_SOURCE_DIRECTORY="/opt/pentaho/"
 
 COPY repo /opt/pentaho/repo/
 COPY pdi-ce-9.3.0.0-428.zip /opt/pentaho/
@@ -34,5 +40,5 @@ RUN apk --no-cache add zip curl && \
     mkdir -p ~/.kettle  && \
     cp  /opt/pentaho/repositories.xml ~/.kettle
 
-    
+
 ENTRYPOINT [ "/bin/sh", "/opt/pentaho/setup-run-server.sh" ]

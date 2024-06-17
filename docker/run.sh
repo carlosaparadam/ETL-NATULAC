@@ -1,6 +1,6 @@
 #!/bin/bash
 /opt/pentaho/data-integration/kitchen.sh \
-    -rep=ETL-Iancarina \
+    -rep=ETL-Natulac \
     -job=Main_JOB \
     "-param:SOURCE_DB_HOST=$SOURCE_DB_HOST" \
     "-param:SOURCE_DB_PORT=$SOURCE_DB_PORT" \

@@ -38,7 +38,7 @@
   "scheduleEnabled" : true,
   "sequence" : {
     "commands" : [ {
-      "script" : "echo \"Calling to ETL Job\"\necho \"Host Name: $RD_OPTION_HOSTNAME\"\necho \"User Identifier: $RD_OPTION_USERID\"\n#echo \"http://$RD_OPTION_USERID:password@$RD_OPTION_HOSTNAME:8080/kettle/executeJob/?rep=ETL-Iancarina&job=Main_JOB&level=INFO&TARGET_DB_HOST=20.12.0.20&TARGET_DB_NAME=TEST&TARGET_DB_PASSWORD=adempiere&TARGET_DB_PORT=5433&TARGET_DB_USERNAME=adempiere&TENANT_IDENTIFIER=J0000000002\"\ncurl \"http://$RD_OPTION_USERID:password@$RD_OPTION_HOSTNAME:8080/kettle/executeJob/?rep=ETL-Iancarina&job=Main_JOB&level=INFO&TARGET_DB_HOST=20.12.0.20&TARGET_DB_NAME=TEST&TARGET_DB_PASSWORD=adempiere&TARGET_DB_PORT=5433&TARGET_DB_USERNAME=adempiere&TENANT_IDENTIFIER=J409125980\" > /tmp/J409125980.txt\ncat /tmp/J409125980.txt"
+      "script" : "echo \"Calling to ETL Job\"\necho \"Host Name: $RD_OPTION_HOSTNAME\"\necho \"User Identifier: $RD_OPTION_USERID\"\n#echo \"http://$RD_OPTION_USERID:password@$RD_OPTION_HOSTNAME:8080/kettle/executeJob/?rep=ETL-Natulac&job=Main_JOB&level=INFO&TARGET_DB_HOST=20.12.0.20&TARGET_DB_NAME=TEST&TARGET_DB_PASSWORD=adempiere&TARGET_DB_PORT=5433&TARGET_DB_USERNAME=adempiere&TENANT_IDENTIFIER=J0000000002\"\ncurl \"http://$RD_OPTION_USERID:password@$RD_OPTION_HOSTNAME:8080/kettle/executeJob/?rep=ETL-Natulac&job=Main_JOB&level=INFO&TARGET_DB_HOST=20.12.0.20&TARGET_DB_NAME=TEST&TARGET_DB_PASSWORD=adempiere&TARGET_DB_PORT=5433&TARGET_DB_USERNAME=adempiere&TENANT_IDENTIFIER=J409125980\" > /tmp/J409125980.txt\ncat /tmp/J409125980.txt"
     } ],
     "keepgoing" : false,
     "strategy" : "node-first"

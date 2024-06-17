@@ -14,7 +14,7 @@
     <parameter>
       <name>EMAIL_DESTINATION_ADDRESS</name>
       <default_value>@EMAIL_DESTINATION_ADDRESS@</default_value>
-      <description>carlosaparadam@gmail.com</description>
+      <description>ElsioSanches@gmail.com@gmail.com</description>
     </parameter>
     <parameter>
       <name>EMAIL_PASSWORD</name>
@@ -24,12 +24,12 @@
     <parameter>
       <name>EMAIL_SENDER_ADDRESS</name>
       <default_value>@EMAIL_SENDER_ADDRESS@</default_value>
-      <description>notificaciones_nomada@mary-iancarina.com</description>
+      <description>ElsioSanches@gmail.com</description>
     </parameter>
     <parameter>
       <name>EMAIL_SENDER_NAME</name>
       <default_value>@EMAIL_SENDER_NAME@</default_value>
-      <description>notificaciones_nomada@mary-iancarina.com</description>
+      <description>ElsioSanches@gmail.com</description>
     </parameter>
     <parameter>
       <name>EMAIL_SMTP_PORT</name>

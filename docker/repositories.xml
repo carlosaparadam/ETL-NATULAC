@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <repositories>
-    <repository> 
+    <repository>
         <id>KettleFileRepository</id>
-        <name>ETL-Iancarina</name>
-        <description>ETL-Iancarina</description>
+        <name>ETL-Natulac</name>
+        <description>ETL-Natulac</description>
         <is_default>true</is_default>
         <base_directory>/opt/pentaho/repo</base_directory>
         <read_only>N</read_only>

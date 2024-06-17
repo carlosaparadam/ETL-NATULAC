@@ -75,6 +75,6 @@ jobs:
       # - name: push image to digitalocean
       #   run: |
       #     doctl registry login
-      #     docker push registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }}
-      #     docker tag registry.digitalocean.com/erpya/etl-iancarina:${{ github.event.release.tag_name }} registry.digitalocean.com/erpya/etl-iancarina:latest
-      #     docker push registry.digitalocean.com/erpya/etl-iancarina:latest
+      #     docker push registry.digitalocean.com/erpya/etl-natulac:${{ github.event.release.tag_name }}
+      #     docker tag registry.digitalocean.com/erpya/etl-natulac:${{ github.event.release.tag_name }} registry.digitalocean.com/erpya/etl-natulac:latest
+      #     docker push registry.digitalocean.com/erpya/etl-natulac:latest
