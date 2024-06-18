@@ -3,6 +3,11 @@ FROM openjdk:8-jdk-alpine
 LABEL maintainer="EdwinBetanc0urt@outlook.com; ElsioSanches@gmail.com;" \
 	description="Mobile Stock gRPC Service"
 
+# Add operative system dependencies
+RUN apk --no-cache add \
+		zip \
+		curl
+
 WORKDIR /opt/pentaho
 
 ENV TARGET_DB_HOST=localhost
@@ -33,8 +38,7 @@ COPY docker/run-server.sh /opt/pentaho/
 COPY docker/setup-run-server.sh /opt/pentaho/
 COPY docker/server.xml /opt/pentaho/
 
-RUN apk --no-cache add zip curl && \
-    unzip /opt/pentaho/pdi-ce-9.3.0.0-428.zip && \
+RUN unzip /opt/pentaho/pdi-ce-9.3.0.0-428.zip && \
     rm /opt/pentaho/pdi-ce-9.3.0.0-428.zip && \
     mkdir -p ~/.kettle  && \
     cp  /opt/pentaho/repositories.xml ~/.kettle
