@@ -10,11 +10,7 @@ RUN apk --no-cache add \
 
 WORKDIR /opt/pentaho
 
-ENV TARGET_DB_HOST=localhost \
-	TARGET_DB_PORT=5433 \
-	TARGET_DB_NAME=ETL \
-	TARGET_DB_USERNAME=adempiere \
-	TARGET_DB_PASSWORD=adempiere \
+ENV \
 	CARTE_PASSWORD=password \
 	# Email config
 	EMAIL_SMTP_SERVER=smtp.hostname \
@@ -23,11 +19,18 @@ ENV TARGET_DB_HOST=localhost \
 	EMAIL_PASSWORD=smtp_password \
 	EMAIL_SENDER_NAME=ETL \
 	EMAIL_DESTINATION_ADDRESS=destination@e-mail.com \
-	# Backend connection
+	# ADempiere Backend connection
 	TOKEN="token-fill" \
+	# Play Backend
 	PLAY_HOST_URL="http://localhost:5561" \
 	PLAY_OUTPUT_PATH="/tmp/play/masters/" \
 	PLAY_INPUT_PATH="/tmp/play/orders/" \
+	# Journal Backend
+	JOURNAL_SOURCE_DB_HOST=localhost \
+	JOURNAL_SOURCE_DB_PORT=5432 \
+	JOURNAL_SOURCE_DB_NAME=ETL \
+	JOURNAL_SOURCE_DB_USERNAME=adempiere \
+	JOURNAL_SOURCE_DB_PASSWORD=adempiere \
 	JOURNAL_HOST_URL="http://localhost:5562"
 
 # add config files
