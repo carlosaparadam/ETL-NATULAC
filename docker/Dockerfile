@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
 
 LABEL maintainer="EdwinBetanc0urt@outlook.com; ElsioSanches@gmail.com;" \
-	description="Mobile Stock gRPC Service"
+	description="ETL Transformation NATULAC"
 
 # Add operative system dependencies
 RUN apk --no-cache add \
@@ -50,7 +50,9 @@ ADD pdi-ce-9.3.0.0-428.zip /opt/pentaho/
 RUN unzip /opt/pentaho/pdi-ce-9.3.0.0-428.zip && \
 	rm /opt/pentaho/pdi-ce-9.3.0.0-428.zip && \
 	mkdir -p ~/.kettle && \
-	cp /opt/pentaho/repositories.xml ~/.kettle
+	cp /opt/pentaho/repositories.xml ~/.kettle && \
+	# chown -R adempiere /opt/pentaho/ && \
+	chmod 777 /opt/pentaho/*.sh
 
 
 ENTRYPOINT [ "/bin/sh", "/opt/pentaho/setup-run-server.sh" ]
