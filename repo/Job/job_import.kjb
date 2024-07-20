@@ -8,7 +8,7 @@
   <created_user>-</created_user>
   <created_date>2024/05/20 10:56:33.380</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2024/07/19 18:10:17.258</modified_date>
+  <modified_date>2024/07/19 23:05:28.032</modified_date>
   <parameters>
     <parameter>
       <name>EMAIL_DESTINATION_ADDRESS</name>
@@ -447,11 +447,11 @@
       <destinationBCc/>
       <replyto>${EMAIL_SENDER_ADDRESS}</replyto>
       <replytoname>${EMAIL_SUBJECT}</replytoname>
-      <subject>ETL Execution Orders</subject>
+      <subject>Se ejecuto con Exito</subject>
       <include_date>Y</include_date>
       <contact_person/>
       <contact_phone/>
-      <comment>Send Orders to ADempiere</comment>
+      <comment>Ejecución Finalizada</comment>
       <include_files>Y</include_files>
       <zip_files>N</zip_files>
       <zip_name/>
@@ -609,22 +609,6 @@
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>Check if a folder is empty</name>
-      <description/>
-      <type>FOLDER_IS_EMPTY</type>
-      <attributes/>
-      <foldername>${PLAY_INPUT_PATH}/process</foldername>
-      <include_subfolders>N</include_subfolders>
-      <specify_wildcard>N</specify_wildcard>
-      <wildcard/>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>336</xloc>
-      <yloc>288</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
       <name>Delete files</name>
       <description/>
       <type>DELETE_FILES</type>
@@ -644,6 +628,99 @@
       <yloc>128</yloc>
       <attributes_kjc/>
     </entry>
+    <entry>
+      <name>Create file</name>
+      <description/>
+      <type>CREATE_FILE</type>
+      <attributes/>
+      <filename>${PLAY_INPUT_PATH}/process/noborrar.txt</filename>
+      <fail_if_file_exists>N</fail_if_file_exists>
+      <add_filename_result>N</add_filename_result>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>368</xloc>
+      <yloc>288</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>File exists</name>
+      <description/>
+      <type>FILE_EXISTS</type>
+      <attributes/>
+      <filename>${PLAY_INPUT_PATH}/process/noborrar.txt</filename>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>288</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Send Mail with error 2</name>
+      <description/>
+      <type>MAIL</type>
+      <attributes/>
+      <server>${EMAIL_SMTP_SERVER}</server>
+      <port>${EMAIL_SMTP_PORT}</port>
+      <destination>${EMAIL_DESTINATION_ADDRESS}</destination>
+      <destinationCc/>
+      <destinationBCc/>
+      <replyto>${EMAIL_SENDER_ADDRESS}</replyto>
+      <replytoname>${EMAIL_SUBJECT}</replytoname>
+      <subject>Procesando Actualmente, Por favor espere</subject>
+      <include_date>Y</include_date>
+      <contact_person/>
+      <contact_phone/>
+      <comment/>
+      <include_files>N</include_files>
+      <zip_files>N</zip_files>
+      <zip_name/>
+      <use_auth>Y</use_auth>
+      <use_secure_auth>Y</use_secure_auth>
+      <auth_user>${EMAIL_SENDER_ADDRESS}</auth_user>
+      <auth_password>${EMAIL_PASSWORD}</auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>Y</use_HTML>
+      <use_Priority>N</use_Priority>
+      <encoding>UTF-8</encoding>
+      <priority>normal</priority>
+      <importance>normal</importance>
+      <sensitivity>normal</sensitivity>
+      <secureconnectiontype>TLS</secureconnectiontype>
+      <replyToAddresses/>
+      <filetypes>
+        <filetype>GENERAL</filetype>
+      </filetypes>
+      <embeddedimages>
+      </embeddedimages>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>272</xloc>
+      <yloc>432</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Delete files 2</name>
+      <description/>
+      <type>DELETE_FILES</type>
+      <attributes/>
+      <arg_from_previous>N</arg_from_previous>
+      <include_subfolders>N</include_subfolders>
+      <fields>
+        <field>
+          <name>${PLAY_INPUT_PATH}/process/noborrar.txt</name>
+          <filemask/>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>784</xloc>
+      <yloc>432</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -654,24 +731,6 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Set variables</from>
-      <to>Check if a folder is empty</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Check if a folder is empty</from>
-      <to>Move files</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>Move files</from>
@@ -706,8 +765,53 @@
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Set variables</from>
+      <to>File exists</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>File exists</from>
+      <to>Create file</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Create file</from>
+      <to>Move files</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>File exists</from>
+      <to>Send Mail with error 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Send Mail with error</from>
+      <to>Delete files 2</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
