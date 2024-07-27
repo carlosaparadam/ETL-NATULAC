@@ -462,12 +462,22 @@
     </hop>
     <hop>
       <from>JSON Result</from>
-      <to>Modified JavaScript value 2</to>
+      <to>Modified JavaScript value</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Filter rows 2</from>
+      <from>Modified JavaScript value</from>
+      <to>Filter rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
       <to>JSON Open Invoice</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Filter rows</from>
+      <to>Abort</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -517,7 +527,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>192</xloc>
+      <xloc>96</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
@@ -757,8 +767,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>864</xloc>
-      <yloc>384</yloc>
+      <xloc>752</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -854,8 +864,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>400</xloc>
-      <yloc>384</yloc>
+      <xloc>368</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -910,7 +920,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>400</xloc>
+      <xloc>240</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1205,13 +1215,42 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1120</xloc>
+      <xloc>976</xloc>
       <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
     <name>Modified JavaScript value 2</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <row_threshold>0</row_threshold>
+    <message>Empty Data (factpendientes.csv)</message>
+    <always_log_rows>Y</always_log_rows>
+    <abort_option>ABORT</abort_option>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Modified JavaScript value</name>
     <type>ScriptValueMod</type>
     <description/>
     <distribute>Y</distribute>
@@ -1228,8 +1267,7 @@
         <jsScript_type>0</jsScript_type>
         <jsScript_name>Script 1</jsScript_name>
         <jsScript_script>//Script here
-
-const count = Number(record_count)</jsScript_script>
+const count = Number(record_count);</jsScript_script>
       </jsScript>
     </jsScripts>
     <fields>
@@ -1251,13 +1289,13 @@ const count = Number(record_count)</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>544</xloc>
-      <yloc>384</yloc>
+      <xloc>496</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Filter rows 2</name>
+    <name>Filter rows</name>
     <type>FilterRows</type>
     <description/>
     <distribute>Y</distribute>
@@ -1267,8 +1305,8 @@ const count = Number(record_count)</jsScript_script>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <send_true_to>JSON Customer VIsit Plan</send_true_to>
-    <send_false_to>Abort 2</send_false_to>
+    <send_true_to>JSON Open Invoice</send_true_to>
+    <send_false_to>Abort</send_false_to>
     <compare>
       <condition>
         <negated>N</negated>
@@ -1295,8 +1333,8 @@ const count = Number(record_count)</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
-      <yloc>384</yloc>
+      <xloc>640</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
