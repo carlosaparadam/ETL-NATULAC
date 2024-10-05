@@ -429,7 +429,7 @@
     <created_user>-</created_user>
     <created_date>2024/08/10 23:38:46.484</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2024/08/13 15:35:14.731</modified_date>
+    <modified_date>2024/10/04 22:18:40.521</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -488,23 +488,53 @@
   </connection>
   <order>
     <hop>
-      <from>Get variables DB</from>
-      <to>Table input</to>
+      <from>Get variables Periods</from>
+      <to>Get Periods</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Table input</from>
-      <to>Select values</to>
+      <from>Get Periods</from>
+      <to>JSON Result</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get variables</from>
-      <to>REST client</to>
+      <from>JSON Result</from>
+      <to>JSON Periods</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Modified JavaScript value</from>
-      <to>Get variables</to>
+      <from>JSON Periods</from>
+      <to>Select Periods</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select Periods</from>
+      <to>Modified JavaScript </to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Modified JavaScript </from>
+      <to>Build Query</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Build Query</from>
+      <to>Dynamic SQL row</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Dynamic SQL row</from>
+      <to>Get variables Currency Iso</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables Currency Iso</from>
+      <to>Select values Journal</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values Journal</from>
+      <to>JSON output</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -513,11 +543,134 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Select values</from>
-      <to>JSON output</to>
+      <from>Modified JavaScript value</from>
+      <to>Get variables</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Get variables</from>
+      <to>REST client</to>
       <enabled>Y</enabled>
     </hop>
   </order>
+  <step>
+    <name>Build Query</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var startDate = "2024-08-01";
+var endDate = "2024-08-09";
+
+//var Query = "SELECT " +
+//    "'#' || TO_CHAR(FECCMP, 'DD/MM/YYYY') || '' NUMCMP, " +
+//    "TO_CHAR(FECCMP, 'YYYY-MM-DD') FECCMP, " +
+//    "NUMCMP || '(' || DESTRA|| ')' DESTRA, " +
+//    "CASE WHEN DEBCRE = '1' THEN MONCTB ELSE 0 END AmtSourceDR, " +
+//    "CASE WHEN DEBCRE = '2' THEN ABS(MONCTB) ELSE 0 END AmtSourceCR, " +
+//    "COALESCE(TRIM(SUBSTRING(CTACTB, 1,8)),'') AccountValue, " +
+//    "COALESCE(TRIM(SUBSTRING(CTACTB, 9,4)),'') UserElement1Value, " +
+//    "CASE WHEN COALESCE(TRIM(SUBSTR(CTACTB, 13,10)),'') IS NOT NULL THEN 'V' ELSE '' END || COALESCE(TRIM(SUBSTRING(CTACTB, 13,10)),'') BPartnerValue " +
+//    "FROM NMM027 " +
+//    "where (FECCMP BETWEEN '" + startDate + "' AND '" + endDate + "' OR FECCMP BETWEEN '" + startDate + "' AND '" + endDate + "' )" +
+//    "ORDER BY 1" +
+//	"LIMIT 1";
+
+var query = "SELECT '#' || TO_CHAR(FECCMP, 'DD/MM/YYYY') || '' NUMCMP, FECCMP, DESTRA, CASE WHEN DEBCRE = '1' THEN MONCTB ELSE 0 END AmtSourceDR, CASE WHEN DEBCRE = '2' THEN ABS(MONCTB) ELSE 0 END AmtSourceCR, COALESCE(TRIM(SUBSTRING(CTACTB, 1,8)),'') AccountValue, COALESCE(TRIM(SUBSTRING(CTACTB, 9,4)),'') UserElement1Value, CASE WHEN COALESCE(TRIM(SUBSTR(CTACTB, 13,10)),'') IS NOT NULL THEN 'V' ELSE '' END || COALESCE(TRIM(SUBSTRING(CTACTB, 13,10)),'') BPartnerValue FROM NMM027 where (FECCMP BETWEEN " + starDateParse + " AND " + endDateParse + " OR FECCMP BETWEEN " + starDateParse + " AND " + endDateParse + ") ORDER BY 1"
+var sql = "SELECT '#' || TO_CHAR(FECCMP, 'DD/MM/YYYY') || '' NUMCMP, FECCMP, DESTRA, CASE WHEN DEBCRE = '1' THEN MONCTB ELSE 0 END AmtSourceDR, CASE WHEN DEBCRE = '2' THEN ABS(MONCTB) ELSE 0 END AmtSourceCR, COALESCE(TRIM(SUBSTRING(CTACTB, 1,8)),'') AccountValue, COALESCE(TRIM(SUBSTRING(CTACTB, 9,4)),'') UserElement1Value, CASE WHEN COALESCE(TRIM(SUBSTR(CTACTB, 13,10)),'') IS NOT NULL THEN 'V' ELSE '' END || COALESCE(TRIM(SUBSTRING(CTACTB, 13,10)),'') BPartnerValue FROM NMM027 where (FECCMP BETWEEN '" + startDate + "' AND '" + endDate + "' OR FECCMP BETWEEN '" + startDate + "' AND '" + endDate + "') ORDER BY 1 LIMIT 2";</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>sql</name>
+        <rename>sql</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>560</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Get Periods</name>
+    <type>Rest</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <applicationType/>
+    <method>GET</method>
+    <url>HOSTSERVICE</url>
+    <urlInField>Y</urlInField>
+    <dynamicMethod>N</dynamicMethod>
+    <methodFieldName/>
+    <urlField>FULL_PATH</urlField>
+    <bodyField/>
+    <httpLogin/>
+    <httpPassword>Encrypted </httpPassword>
+    <proxyHost/>
+    <proxyPort/>
+    <preemptive>N</preemptive>
+    <trustStoreFile/>
+    <trustStorePassword>Encrypted </trustStorePassword>
+    <headers>
+      <header>
+        <field>ATORIZATIONS</field>
+        <name>Authorization</name>
+      </header>
+    </headers>
+    <parameters>
+      </parameters>
+    <matrixParameters>
+      </matrixParameters>
+    <result>
+      <name>result</name>
+      <code/>
+      <response_time/>
+      <response_header/>
+    </result>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
   <step>
     <name>Get variables</name>
     <type>GetVariable</type>
@@ -532,7 +685,7 @@
     <fields>
       <field>
         <name>FULL_PATH</name>
-        <variable>${JOURNAL_HOST_URL}/v1/journals</variable>
+        <variable>${HOST}/v1/journals</variable>
         <type>String</type>
         <format/>
         <currency/>
@@ -564,13 +717,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>928</xloc>
-      <yloc>192</yloc>
+      <xloc>1056</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Get variables DB</name>
+    <name>Get variables Periods</name>
     <type>GetVariable</type>
     <description/>
     <distribute>Y</distribute>
@@ -582,8 +735,8 @@
     </partitioning>
     <fields>
       <field>
-        <name>host</name>
-        <variable>${JOURNAL_SOURCE_DB_HOST}</variable>
+        <name>FULL_PATH</name>
+        <variable>${HOST}/v1/periods?page_size=200</variable>
         <type>String</type>
         <format/>
         <currency/>
@@ -594,44 +747,8 @@
         <trim_type>none</trim_type>
       </field>
       <field>
-        <name>port</name>
-        <variable>${JOURNAL_SOURCE_DB_PORT}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>namedb</name>
-        <variable>${JOURNAL_SOURCE_DB_NAME}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>user</name>
-        <variable>${JOURNAL_SOURCE_DB_USERNAME}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>pass</name>
-        <variable>JOURNAL_SOURCE_DB_PASSWORD</variable>
+        <name>ATORIZATIONS</name>
+        <variable>${TOKEN}</variable>
         <type>String</type>
         <format/>
         <currency/>
@@ -651,8 +768,176 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>80</xloc>
-      <yloc>192</yloc>
+      <xloc>64</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>JSON Periods</name>
+    <type>JsonInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>N</addresultfile>
+    <readurl>N</readurl>
+    <removeSourceField>N</removeSourceField>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <ignoreMissingPath>Y</ignoreMissingPath>
+    <defaultPathLeafToNull>Y</defaultPathLeafToNull>
+    <includeNulls>N</includeNulls>
+    <rownum_field/>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>name_periods</name>
+        <path>$..name</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>start_date</name>
+        <path>$..start_date</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>end_date</name>
+        <path>$..end_date</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <valueField>listPeriods</valueField>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>224</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>JSON Result</name>
+    <type>JsonInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <addresultfile>N</addresultfile>
+    <readurl>N</readurl>
+    <removeSourceField>N</removeSourceField>
+    <IsIgnoreEmptyFile>N</IsIgnoreEmptyFile>
+    <doNotFailIfNoFile>Y</doNotFailIfNoFile>
+    <ignoreMissingPath>Y</ignoreMissingPath>
+    <defaultPathLeafToNull>Y</defaultPathLeafToNull>
+    <includeNulls>N</includeNulls>
+    <rownum_field/>
+    <file>
+      <name/>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>listPeriods</name>
+        <path>$..periods</path>
+        <type>None</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <IsInFields>Y</IsInFields>
+    <IsAFile>N</IsAFile>
+    <valueField>result</valueField>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>224</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -670,12 +955,12 @@
     <outputValue>outputValue</outputValue>
     <jsonBloc>data</jsonBloc>
     <nrRowsInBloc>1</nrRowsInBloc>
-    <operation_type>outputvalue</operation_type>
+    <operation_type>both</operation_type>
     <compatibility_mode>N</compatibility_mode>
     <encoding>UTF-8</encoding>
     <addtoresult>N</addtoresult>
     <file>
-      <name/>
+      <name>/home/elsio/Vídeos/journal</name>
       <extention>json</extention>
       <append>N</append>
       <split>N</split>
@@ -688,40 +973,44 @@
     </file>
     <fields>
       <field>
-        <name>documentno</name>
+        <name>document_no</name>
         <element>document_no</element>
       </field>
       <field>
-        <name>dateacct</name>
+        <name>organization_code</name>
+        <element>organization_code</element>
+      </field>
+      <field>
+        <name>date_acct</name>
         <element>date_acct</element>
+      </field>
+      <field>
+        <name>currency_iso_code</name>
+        <element>currency_iso_code</element>
       </field>
       <field>
         <name>description</name>
         <element>description</element>
       </field>
       <field>
-        <name>amtsourcedr</name>
+        <name>amt_source_dr</name>
         <element>amt_source_dr</element>
       </field>
       <field>
-        <name>amtsourcecr</name>
+        <name>amt_source_cr</name>
         <element>amt_source_cr</element>
       </field>
       <field>
-        <name>accountvalue</name>
+        <name>account_value</name>
         <element>account_value</element>
       </field>
       <field>
-        <name>userelement1value</name>
-        <element>user_element1_value</element>
-      </field>
-      <field>
-        <name>userelement2value</name>
-        <element>user_element2_value</element>
-      </field>
-      <field>
-        <name>bpartnervalue</name>
+        <name>bpartner_value</name>
         <element>bpartner_value</element>
+      </field>
+      <field>
+        <name>user_element1_value</name>
+        <element>user_element1_value</element>
       </field>
     </fields>
     <attributes/>
@@ -733,8 +1022,66 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>192</yloc>
+      <xloc>896</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Modified JavaScript </name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <compatible>N</compatible>
+    <optimizationLevel>9</optimizationLevel>
+    <jsScripts>
+      <jsScript>
+        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>//Script here
+
+function isoToDate(isoString) {
+  return isoString.substring(0, 10);
+}
+var starDateParse = isoToDate(start_date);
+var endDateParse = isoToDate(end_date);</jsScript_script>
+      </jsScript>
+    </jsScripts>
+    <fields>
+      <field>
+        <name>starDateParse</name>
+        <rename>starDateParse</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+      <field>
+        <name>endDateParse</name>
+        <rename>endDateParse</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <replace>N</replace>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -755,38 +1102,17 @@
       <jsScript>
         <jsScript_type>0</jsScript_type>
         <jsScript_name>Script 1</jsScript_name>
-        <jsScript_script>//Script here
+        <jsScript_script>var json = outputValue;
 
-var json = {};
-json.documentno = documentno;
-json.dateacct = dateacct;
-json.description = description;
-json.amtsourcedr = amtsourcedr;
-json.amtsourcecr = amtsourcecr;
-json.accountvalue = accountvalue;
-json.userelement1value = userelement1value;
-json.userelement2value = userelement2value;
-json.bpartnervalue = bpartnervalue;
-//var JsonOutput = json;
+var objeto = JSON.parse(json);
+var data = objeto.data[0];
+data.amt_source_cr = data.amt_source_cr.toString();
+data.amt_source_dr = data.amt_source_dr.toString();
+data.date_acct = data.date_acct.replace(/\//g, '-').replace(' ', ' T').replace('00:00:00.000', '00:00:00') + 'Z';
+data.date_acct = data.date_acct.replace(' T', 'T');
+var resultado = JSON.stringify(data);
 
-// Crear el objeto JSON
-var jsonObject = {
-  "document_no": documentno,
-  "date_acct": dateacct,
-  "description": description,
-  "amt_source_dr": amtsourcedr.toString(),
-  "amt_source_cr": amtsourcecr.toString(),
-  "account_value": accountvalue,
-  "user_element1_value": userelement1value,
-  "user_element2_value": userelement2value,
-  "bpartner_value": bpartnervalue,
-};
-
-// Convertir el objeto JSON en una cadena
-var jsonOutput = JSON.stringify(jsonObject);
-
-// Asignar la cadena al campo JsonOutput
-JsonOutput = jsonOutput;</jsScript_script>
+var JsonOutput = JSON.stringify(data);</jsScript_script>
       </jsScript>
     </jsScripts>
     <fields>
@@ -808,8 +1134,8 @@ JsonOutput = jsonOutput;</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>768</xloc>
-      <yloc>192</yloc>
+      <xloc>896</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -865,15 +1191,15 @@ JsonOutput = jsonOutput;</jsScript_script>
     </remotesteps>
     <GUI>
       <xloc>1056</xloc>
-      <yloc>192</yloc>
+      <yloc>240</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Select values</name>
+    <name>Select Periods</name>
     <type>SelectValues</type>
     <description/>
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution/>
     <copies>1</copies>
     <partitioning>
@@ -881,62 +1207,20 @@ JsonOutput = jsonOutput;</jsScript_script>
       <schema_name/>
     </partitioning>
     <fields>
+      <field>
+        <name>name_periods</name>
+      </field>
+      <field>
+        <name>start_date</name>
+      </field>
+      <field>
+        <name>end_date</name>
+      </field>
       <select_unspecified>N</select_unspecified>
       <meta>
-        <name>documentno</name>
-        <rename>documentno</rename>
-        <type>String</type>
-        <length>36</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>dateacct</name>
-        <rename>dateacct</rename>
-        <type>String</type>
-        <length>10</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>description</name>
-        <rename>description</rename>
-        <type>String</type>
-        <length>30</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>amtsourcedr</name>
-        <rename>amtsourcedr</rename>
-        <type>String</type>
+        <name>name_periods</name>
+        <rename>name_periods</rename>
+        <type>None</type>
         <length>-2</length>
         <precision>-2</precision>
         <conversion_mask/>
@@ -951,9 +1235,9 @@ JsonOutput = jsonOutput;</jsScript_script>
         <storage_type/>
       </meta>
       <meta>
-        <name>amtsourcecr</name>
-        <rename>amtsourcecr</rename>
-        <type>String</type>
+        <name>start_date</name>
+        <rename>start_date</rename>
+        <type>None</type>
         <length>-2</length>
         <precision>-2</precision>
         <conversion_mask/>
@@ -968,61 +1252,10 @@ JsonOutput = jsonOutput;</jsScript_script>
         <storage_type/>
       </meta>
       <meta>
-        <name>accountvalue</name>
-        <rename>accountvalue</rename>
-        <type>String</type>
-        <length>2147483647</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>userelement1value</name>
-        <rename>userelement1value</rename>
-        <type>String</type>
-        <length>2147483647</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>userelement2value</name>
-        <rename>userelement2value</rename>
-        <type>String</type>
-        <length>2147483647</length>
-        <precision>-2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>bpartnervalue</name>
-        <rename>bpartnervalue</rename>
-        <type>String</type>
-        <length>2147483647</length>
+        <name>end_date</name>
+        <rename>end_date</rename>
+        <type>None</type>
+        <length>-2</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
@@ -1045,14 +1278,14 @@ JsonOutput = jsonOutput;</jsScript_script>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>320</xloc>
-      <yloc>192</yloc>
+      <xloc>384</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Table input</name>
-    <type>TableInput</type>
+    <name>Dynamic SQL row</name>
+    <type>DynamicSQLRow</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1062,355 +1295,12 @@ JsonOutput = jsonOutput;</jsScript_script>
       <schema_name/>
     </partitioning>
     <connection>ADEMPIERE</connection>
-    <sql>SELECT
-  NUMCMP AS DocumentNo,
-  FECCMP AS DateAcct,
-  DESTRA AS Description,
-  (CASE WHEN DEBCRE = '1' 
-    THEN MONCTB
-    ELSE 0
-  END) AS AmtSourceDR,
-  (CASE WHEN DEBCRE = '2'
-    THEN ABS(MONCTB)
-    ELSE 0
-  END) AS AmtSourceCR,
-  COALESCE(TRIM(SUBSTR(CTACTB, 1, 8)), '') AS AccountValue,
-  COALESCE(TRIM(SUBSTR(CTACTB, 9, 4)), '') AS UserElement1Value,
-  NULL AS UserElement2Value,
-  COALESCE(TRIM(SUBSTR(CTACTB, 13, 10)), '') AS BPartnerValue
-
-FROM "public".NMM027
-</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <cached_row_meta_active>N</cached_row_meta_active>
-    <row-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>host</name>
-        <length>26</length>
-        <precision>-1</precision>
-        <origin>Get variables DB</origin>
-        <comments/>
-        <conversion_Mask/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>port</name>
-        <length>26</length>
-        <precision>-1</precision>
-        <origin>Get variables DB</origin>
-        <comments/>
-        <conversion_Mask/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>namedb</name>
-        <length>26</length>
-        <precision>-1</precision>
-        <origin>Get variables DB</origin>
-        <comments/>
-        <conversion_Mask/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>user</name>
-        <length>26</length>
-        <precision>-1</precision>
-        <origin>Get variables DB</origin>
-        <comments/>
-        <conversion_Mask/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>pass</name>
-        <length>26</length>
-        <precision>-1</precision>
-        <origin>Get variables DB</origin>
-        <comments/>
-        <conversion_Mask/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>documentno</name>
-        <length>36</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>documentno</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>Date</type>
-        <storagetype>normal</storagetype>
-        <name>dateacct</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>dateacct</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>description</name>
-        <length>30</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>description</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>BigNumber</type>
-        <storagetype>normal</storagetype>
-        <name>amtsourcedr</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>amtsourcedr</comments>
-        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
-        <decimal_symbol>.</decimal_symbol>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>BigNumber</type>
-        <storagetype>normal</storagetype>
-        <name>amtsourcecr</name>
-        <length>-1</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>amtsourcecr</comments>
-        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
-        <decimal_symbol>.</decimal_symbol>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>accountvalue</name>
-        <length>2147483647</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>accountvalue</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>userelement1value</name>
-        <length>2147483647</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>userelement1value</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>userelement2value</name>
-        <length>2147483647</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>userelement2value</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-      <value-meta>
-        <type>String</type>
-        <storagetype>normal</storagetype>
-        <name>bpartnervalue</name>
-        <length>2147483647</length>
-        <precision>-1</precision>
-        <origin>Table input</origin>
-        <comments>bpartnervalue</comments>
-        <conversion_Mask/>
-        <decimal_symbol>,</decimal_symbol>
-        <grouping_symbol>.</grouping_symbol>
-        <currency_symbol/>
-        <trim_type>none</trim_type>
-        <case_insensitive>N</case_insensitive>
-        <collator_disabled>Y</collator_disabled>
-        <collator_strength>0</collator_strength>
-        <sort_descending>N</sort_descending>
-        <output_padding>N</output_padding>
-        <date_format_lenient>N</date_format_lenient>
-        <date_format_locale>es_VE</date_format_locale>
-        <date_format_timezone>America/Caracas</date_format_timezone>
-        <lenient_string_to_number>N</lenient_string_to_number>
-      </value-meta>
-    </row-meta>
+    <rowlimit>0</rowlimit>
+    <sql>SELECT '#' || TO_CHAR(FECCMP, 'DD/MM/YYYY') || '' NUMCMP, FECCMP, DESTRA, CASE WHEN DEBCRE = '1' THEN MONCTB ELSE 0 END AmtSourceDR, CASE WHEN DEBCRE = '2' THEN ABS(MONCTB) ELSE 0 END AmtSourceCR, COALESCE(TRIM(SUBSTRING(CTACTB, 1,8)),'') AccountValue, COALESCE(TRIM(SUBSTRING(CTACTB, 9,4)),'') UserElement1Value, CASE WHEN COALESCE(TRIM(SUBSTR(CTACTB, 13,10)),'') IS NOT NULL THEN 'V' ELSE '' END || COALESCE(TRIM(SUBSTRING(CTACTB, 13,10)),'') BPartnerValue FROM NMM027;</sql>
+    <outer_join>N</outer_join>
+    <replace_vars>N</replace_vars>
+    <sql_fieldname>sql</sql_fieldname>
+    <query_only_on_change>N</query_only_on_change>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -1420,8 +1310,127 @@ FROM "public".NMM027
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
-      <yloc>192</yloc>
+      <xloc>560</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values Journal</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>numcmp</name>
+        <rename>document_no</rename>
+      </field>
+      <field>
+        <name>ORGANIZATION</name>
+        <rename>organization_code</rename>
+      </field>
+      <field>
+        <name>feccmp</name>
+        <rename>date_acct</rename>
+      </field>
+      <field>
+        <name>CURRENCY</name>
+        <rename>currency_iso_code</rename>
+      </field>
+      <field>
+        <name>destra</name>
+        <rename>description</rename>
+      </field>
+      <field>
+        <name>amtsourcedr</name>
+        <rename>amt_source_dr</rename>
+      </field>
+      <field>
+        <name>amtsourcecr</name>
+        <rename>amt_source_cr</rename>
+      </field>
+      <field>
+        <name>accountvalue</name>
+        <rename>account_value</rename>
+      </field>
+      <field>
+        <name>bpartnervalue</name>
+        <rename>bpartner_value</rename>
+      </field>
+      <field>
+        <name>userelement1value</name>
+        <rename>user_element1_value</rename>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Get variables Currency Iso</name>
+    <type>GetVariable</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>CURRENCY</name>
+        <variable>${CURRENCY_ISO_CODE}</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+      <field>
+        <name>ORGANIZATION</name>
+        <variable>${ORGANIZATION_CODE}</variable>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>720</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

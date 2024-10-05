@@ -8,8 +8,13 @@
   <created_user>-</created_user>
   <created_date>2024/01/31 14:32:43.116</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2024/08/28 18:00:17.479</modified_date>
+  <modified_date>2024/10/04 22:21:03.564</modified_date>
   <parameters>
+    <parameter>
+      <name>CURRENCY_ISO_CODE</name>
+      <default_value>@CURRENCY_ISO_CODE@</default_value>
+      <description/>
+    </parameter>
     <parameter>
       <name>EMAIL_DESTINATION_ADDRESS</name>
       <default_value>@EMAIL_DESTINATION_ADDRESS@</default_value>
@@ -69,6 +74,11 @@
       <name>JOURNAL_SOURCE_DB_USERNAME</name>
       <default_value>@JOURNAL_SOURCE_DB_USERNAME@</default_value>
       <description>User</description>
+    </parameter>
+    <parameter>
+      <name>ORGANIZATION_CODE</name>
+      <default_value>@ORGANIZATION_CODE@</default_value>
+      <description/>
     </parameter>
     <parameter>
       <name>TOKEN</name>
@@ -487,7 +497,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>64</xloc>
+      <xloc>192</xloc>
       <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
@@ -582,7 +592,7 @@
       <secureconnectiontype>TLS</secureconnectiontype>
       <replyToAddresses/>
       <filetypes>
-        <filetype>GENERAL</filetype>
+        <filetype>ERRORLINE</filetype>
       </filetypes>
       <embeddedimages>
       </embeddedimages>
@@ -604,7 +614,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>320</xloc>
+      <xloc>304</xloc>
       <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
@@ -620,52 +630,6 @@
       <yloc>304</yloc>
       <attributes_kjc/>
     </entry>
-    <entry>
-      <name>Send Mail with Variable</name>
-      <description/>
-      <type>MAIL</type>
-      <attributes/>
-      <server>${EMAIL_SMTP_SERVER}</server>
-      <port>${EMAIL_SMTP_PORT}</port>
-      <destination>${EMAIL_DESTINATION_ADDRESS}</destination>
-      <destinationCc/>
-      <destinationBCc/>
-      <replyto>${EMAIL_SENDER_ADDRESS}</replyto>
-      <replytoname>${EMAIL_SUBJECT}</replytoname>
-      <subject>ETL Execution Error</subject>
-      <include_date>Y</include_date>
-      <contact_person/>
-      <contact_phone/>
-      <comment>TOKEN: ${TOKEN} => 
-HOST: ${JOURNAL_HOST_URL} =></comment>
-      <include_files>Y</include_files>
-      <zip_files>N</zip_files>
-      <zip_name/>
-      <use_auth>Y</use_auth>
-      <use_secure_auth>Y</use_secure_auth>
-      <auth_user>${EMAIL_SENDER_ADDRESS}</auth_user>
-      <auth_password>${EMAIL_PASSWORD}</auth_password>
-      <only_comment>N</only_comment>
-      <use_HTML>Y</use_HTML>
-      <use_Priority>N</use_Priority>
-      <encoding>UTF-8</encoding>
-      <priority>normal</priority>
-      <importance>normal</importance>
-      <sensitivity>normal</sensitivity>
-      <secureconnectiontype>TLS</secureconnectiontype>
-      <replyToAddresses/>
-      <filetypes>
-        <filetype>GENERAL</filetype>
-      </filetypes>
-      <embeddedimages>
-      </embeddedimages>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>192</xloc>
-      <yloc>192</yloc>
-      <attributes_kjc/>
-    </entry>
   </entries>
   <hops>
     <hop>
@@ -676,42 +640,6 @@ HOST: ${JOURNAL_HOST_URL} =></comment>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>Set variables</from>
-      <to>Transformation Journal Import</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Set variables</from>
-      <to>Transformation Journal Import</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Transformation Journal Import</from>
-      <to>Send Mail with Succes</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Transformation Journal Import</from>
-      <to>Send Mail with error</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>Table exists</from>
@@ -728,26 +656,44 @@ HOST: ${JOURNAL_HOST_URL} =></comment>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Start</from>
-      <to>Send Mail with Variable</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
+      <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>Send Mail with Variable</from>
+      <from>Start</from>
       <to>Table exists</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
+      <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Set variables</from>
+      <to>Transformation Journal Import</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformation Journal Import</from>
+      <to>Send Mail with Succes</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Transformation Journal Import</from>
+      <to>Send Mail with error</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
